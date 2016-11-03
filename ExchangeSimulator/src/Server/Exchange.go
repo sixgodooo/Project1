@@ -29,6 +29,7 @@ func (exchange *Exchange) CancelOrder(order Order) (bool, error) {
 }
 
 func (exchange *Exchange) QueryOrderBook(productId int) OrderBook {
+	return exchange._tradingSession.QueryOrderBook(productId)
 }
 
 func (exchange *Exchange) Init() {

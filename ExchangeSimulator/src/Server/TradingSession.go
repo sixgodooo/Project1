@@ -49,6 +49,10 @@ func (s *ContinousTradingSession) CancelOrder(order Order)(bool, error) {
 	return true, nil
 } 
 
+func (s *ContinousTradingSession) QueryOrderBook(productId int) OrderBook {
+	return s._executionSystem.QueryOrderBook(productId)
+}
+
 func (s *ContinousTradingSession) SessionId() string {
 	return ""//TODO
 }
@@ -99,6 +103,10 @@ func (s *CallTradingSession) CancelOrder(order Order) (bool, error){
 	//TODO
 	return true, nil
 } 
+
+func (s *CallTradingSession) QueryOrderBook(productId int) OrderBook {
+	return s._executionSystem.QueryOrderBook(productId)
+}
 
 func (s *CallTradingSession) SessionId() string {
 	return ""//TODO
