@@ -18,17 +18,18 @@ type EnvConfigImpl struct {
 
 func (config *EnvConfigImpl) LoadGlobalSetting() {
 	//TODO
+	//从数据库或者配置文件加载配置数据
 	config._tradingSessionType = ContinousMarket
 	config._executionSystemType = OrderDriven
 }
 
 func (config *EnvConfigImpl) TradingSessionType() int {
-	//TODO
+	//TODO 暂时只用一个session，所以只返回一个类型
 	return config._tradingSessionType
 }
 
 func (config *EnvConfigImpl) ExecutionSystemType() int {
-	//TODO
+	//TODO 暂时只用一个session，所以只返回一个类型
 	return config._executionSystemType
 }
 

@@ -12,11 +12,15 @@ const (
 type TradingSession interface {
 	Init() 
 	
-	AddOrder(order Order)
-	CancelOrder(order Order)
+	AddOrder(order Order) (bool, error)
+	CancelOrder(order Order) (bool, error)
+	QueryOrderBook(productId int) OrderBook
 	
 	SessionId() string
 	SessionType() int
+	
+	SetExecutionSystemType(int)
+	ExecutionSystemType() int
 	
 	Start()
 	Suspend()
@@ -26,18 +30,23 @@ type TradingSession interface {
 
 type ContinousTradingSession struct {
 	//TODO
+	_executionSystemType int
+	_executionSystem ExecutionSystem
 }
 
 func (s *ContinousTradingSession) Init() {
 	//TODO
+	s._executionSystem = CreateExecutionSystem(s._executionSystemType)
 }
 
-func (s *ContinousTradingSession) AddOrder(order Order) {
+func (s *ContinousTradingSession) AddOrder(order Order) (bool, error) {
 	//TODO
+	return true, nil
 }
 
-func (s *ContinousTradingSession) CancelOrder(order Order) {
+func (s *ContinousTradingSession) CancelOrder(order Order)(bool, error) {
 	//TODO
+	return true, nil
 } 
 
 func (s *ContinousTradingSession) SessionId() string {
@@ -46,6 +55,14 @@ func (s *ContinousTradingSession) SessionId() string {
 
 func (s *ContinousTradingSession) SessionType() int {
 	return 0;//TODO
+}
+
+func (s *ContinousTradingSession) SetExecutionSystemType(executionSystemType int) {
+	s._executionSystemType = executionSystemType
+} 
+
+func (s *ContinousTradingSession) ExecutionSystemType() int {
+	return s._executionSystemType
 }
 
 func (s *ContinousTradingSession) Start() {
@@ -64,18 +81,23 @@ func (s *ContinousTradingSession) End() {
 }
 
 type CallTradingSession struct {
+	_executionSystemType int
+	_executionSystem ExecutionSystem
 }
 
 func (s *CallTradingSession) Init() {
 	//TODO
+	s._executionSystem = CreateExecutionSystem(s._executionSystemType)
 }
 
-func (s *CallTradingSession) AddOrder(order Order) {
+func (s *CallTradingSession) AddOrder(order Order) (bool, error){
 	//TODO
+	return true, nil
 }
 
-func (s *CallTradingSession) CancelOrder(order Order) {
+func (s *CallTradingSession) CancelOrder(order Order) (bool, error){
 	//TODO
+	return true, nil
 } 
 
 func (s *CallTradingSession) SessionId() string {
@@ -84,6 +106,14 @@ func (s *CallTradingSession) SessionId() string {
 
 func (s *CallTradingSession) SessionType() int {
 	return 0;//TODO
+}
+
+func (s *CallTradingSession) SetExecutionSystemType(executionSystemType int) {
+	s._executionSystemType = executionSystemType
+} 
+
+func (s *CallTradingSession) ExecutionSystemType() int {
+	return s._executionSystemType
 }
 
 func (s *CallTradingSession) Start() {
