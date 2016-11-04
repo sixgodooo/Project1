@@ -35,15 +35,17 @@ func (exchange *Exchange) QueryOrderBook(productId int) OrderBook {
 func (exchange *Exchange) Init() {
 	exchange._userManager = CreateUserManager()
 	exchange._envConfig = CreateEnvConfig()
-	//exchange._tradingSessionManager = CreateTradingSessionManager()
 	
 	tradingSessionType := exchange._envConfig.TradingSessionType()
 	executionSystemType := exchange._envConfig.ExecutionSystemType()
 	
-	tradingSession := CreateTradingSession(tradingSessionType)
-	tradingSession.SetExecutionSystemType(executionSystemType)
+	tradingSession := CreateTradingSession(tradingSessionType, executionSystemType)
+	//tradingSession.SetExecutionSystemType(executionSystemType)
 	
+	//定时启动或者挂起或者停止session
 	tradingSession.Start()
+	//tradingSession.Suspend()
+	//tradingSession.Stop()
 }
 
 func CreateExchange() *Exchange {

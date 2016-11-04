@@ -1,9 +1,10 @@
+
 package Server
 
 import (
 
 )
-
+/*
 type TradingSessionManager interface {
 	AddTradingSession(session TradingSession)
 	DeleteTradingSession(sessionId string)//删除一个TradingSession，入参是SessionId
@@ -35,3 +36,4 @@ func (m *TradingSessionManagerImpl) Init() {
 func CreateTradingSessionManager() TradingSessionManager{
 	return new(TradingSessionManagerImpl)
 }
+*/

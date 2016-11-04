@@ -1,7 +1,7 @@
 package Server
 
 import (
-
+	"time"
 )
 
 const (
@@ -10,21 +10,12 @@ const (
 )
 
 type Order interface {
-    //CreateOrder(price int, orderType int, amount int, productId int) *Order
-	Price() int
-	//SetPrice(price uint)
-	
-	OrderType() int
-	//SetOrderType(orderType int)
-	
+	Price() int	
+	OrderType() int	
 	Amount() uint
-	//SetAmount(amount uint) 
-	
 	ProductId() int
-	
-	OrderId() int
-	SetOrderId(int)
-	
+	OrderId() string
+	SetOrderId(string)
 	User() User
 }
 
@@ -33,8 +24,9 @@ type OrderImpl struct {
 	_orderType int
 	_amount uint
 	_productId int
-	_orderId int
+	_orderId string
 	_user User
+	_time time.Time
 }
 
 func (s *OrderImpl) Price() int {
@@ -53,11 +45,11 @@ func (s *OrderImpl) ProductId() int {
 	return s._productId
 }
 
-func (s *OrderImpl) OrderId() int {
+func (s *OrderImpl) OrderId() string {
 	return s._orderId
 }
 
-func (s *OrderImpl) SetOrderId(id int) {
+func (s *OrderImpl) SetOrderId(id string) {
 	s._orderId = id
 }
 
@@ -71,5 +63,7 @@ func CreateOrder(price int, orderType int, amount uint, productId int, user User
 	order._amount = amount
 	order._productId = productId
 	order._user = user
+	order._time = time.Now()
+	order._orderId = time.Now().String()
 	return order
 }

@@ -36,7 +36,6 @@ func (s *OrderDrivenSystem) QueryOrderBook(productId int) OrderBook {
 
 func (s *OrderDrivenSystem) Init() {
 	s._orderBookManager = CreateOrderBookManager()
-	//从数据库将Orderbook数据加载至内存
 }
 
 type BrokeredSystem struct {
@@ -60,7 +59,6 @@ func (s *BrokeredSystem) QueryOrderBook(productId int) OrderBook {
 
 func (s *BrokeredSystem) Init() {
 	s._orderBookManager = CreateOrderBookManager()
-	//从数据库将Orderbook数据加载至内存
 }
 
 func CreateExecutionSystem(systemType int) ExecutionSystem {
