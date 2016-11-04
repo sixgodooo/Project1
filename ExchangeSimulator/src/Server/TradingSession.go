@@ -39,7 +39,7 @@ func (s *ContinousTradingSession) Init() {
 	//TODO
 	s._executionSystem = CreateExecutionSystem(s._executionSystemType)
 	s._started = false
-	s._log = CreateLog()
+	s._log = CreateLog("Server.txt")
 }
 
 func (s *ContinousTradingSession) AddOrder(order Order) (bool, error) {

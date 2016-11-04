@@ -37,7 +37,7 @@ func (s *OrderDrivenSystem) QueryOrderBook(productId int) OrderBook {
 
 func (s *OrderDrivenSystem) Init() {
 	s._orderBookManager = CreateOrderBookManager()
-	s._log = CreateLog()
+	s._log = CreateLog("Server.txt")
 }
 
 type BrokeredSystem struct {
