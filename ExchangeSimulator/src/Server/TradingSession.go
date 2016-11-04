@@ -32,16 +32,19 @@ type ContinousTradingSession struct {
 	_executionSystemType int
 	_executionSystem ExecutionSystem
 	_started bool 
+	_log Log
 }
 
 func (s *ContinousTradingSession) Init() {
 	//TODO
 	s._executionSystem = CreateExecutionSystem(s._executionSystemType)
 	s._started = false
+	s._log = CreateLog()
 }
 
 func (s *ContinousTradingSession) AddOrder(order Order) (bool, error) {
 	//TODO 这里可以考虑直接跟客户通信
+	s._log.Log("AddOrder:" + order.OrderId())//日志使用举例
 	if (s._started) {
 		return s._executionSystem.AddOrder(order)
 	} else {

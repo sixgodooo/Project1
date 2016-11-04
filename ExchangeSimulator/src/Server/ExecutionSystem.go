@@ -18,6 +18,7 @@ type ExecutionSystem interface {
 type OrderDrivenSystem struct {
 	//TODO
 	_orderBookManager OrderBookManager
+	_log Log
 }
 
 func (s *OrderDrivenSystem) AddOrder(order Order) (bool, error){
@@ -36,6 +37,7 @@ func (s *OrderDrivenSystem) QueryOrderBook(productId int) OrderBook {
 
 func (s *OrderDrivenSystem) Init() {
 	s._orderBookManager = CreateOrderBookManager()
+	s._log = CreateLog()
 }
 
 type BrokeredSystem struct {
