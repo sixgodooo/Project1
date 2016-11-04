@@ -4,21 +4,24 @@ import (
 )
 
 type UserManager interface{
-	AddUser(name string, id string) (bool, error)
-	FindUser(user User) (bool, error)
+	AddUser(user User) (bool, error)
+	FindUser(id string) (User, bool)
 	Check(user User) bool
 }
 
 type UserManagerImpl struct {
 	//TODO
+	_userMap map[string]User
 }
 
-func (m *UserManagerImpl) AddUser(name string, id string) (bool, error) {
+func (m *UserManagerImpl) AddUser(user User) (bool, error) {
+	m._userMap[user.UserId()] = user
 	return true, nil//TODO
 }
 
-func (m *UserManagerImpl) FindUser(user User) (bool, error) {
-	return true, nil//TODO
+func (m *UserManagerImpl) FindUser(id string) (User, bool) {
+	user, exist := m._userMap[id]
+	return user, exist
 }
 
 func (m *UserManagerImpl) Check(user User) bool{
@@ -27,6 +30,8 @@ func (m *UserManagerImpl) Check(user User) bool{
 
 func (m *UserManagerImpl) Init() {
 	//TODO
+	//从数据库或者文件加载用户数据
+	m._userMap = make(map[string]User)
 }
 
 func CreateUserManager() UserManager {

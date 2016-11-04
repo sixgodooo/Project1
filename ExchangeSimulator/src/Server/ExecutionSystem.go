@@ -17,7 +17,7 @@ type ExecutionSystem interface {
 
 type OrderDrivenSystem struct {
 	//TODO
-	_orderBookMap map[int]OrderBook
+	_orderBookManager OrderBookManager
 }
 
 func (s *OrderDrivenSystem) AddOrder(order Order) (bool, error){
@@ -31,17 +31,17 @@ func (s *OrderDrivenSystem) CancelOrder(order Order) (bool, error) {
 }
 
 func (s *OrderDrivenSystem) QueryOrderBook(productId int) OrderBook {
-	return s._orderBookMap[productId]
+	return s._orderBookManager.FindOrderBook(productId)
 }
 
 func (s *OrderDrivenSystem) Init() {
-	s._orderBookMap = make(map[int]OrderBook)
+	s._orderBookManager = CreateOrderBookManager()
 	//从数据库将Orderbook数据加载至内存
 }
 
 type BrokeredSystem struct {
 	//TODO	
-	_orderBookMap map[int]OrderBook
+	_orderBookManager OrderBookManager
 }
 
 func (s *BrokeredSystem) AddOrder(order Order) (bool, error) {
@@ -55,11 +55,11 @@ func (s *BrokeredSystem) CancelOrder(order Order) (bool, error) {
 }
 
 func (s *BrokeredSystem) QueryOrderBook(productId int) OrderBook {
-	return s._orderBookMap[productId]
+	return s._orderBookManager.FindOrderBook(productId)
 }
 
 func (s *BrokeredSystem) Init() {
-	s._orderBookMap = make(map[int]OrderBook)
+	s._orderBookManager = CreateOrderBookManager()
 	//从数据库将Orderbook数据加载至内存
 }
 
