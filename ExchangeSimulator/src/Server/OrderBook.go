@@ -109,6 +109,7 @@ func (o *OrderBookImpl) ModOrderAmount(order Order, amount uint) {
 		}
 		o._bidOrderSeq[index].SetAmount(amount)
 	} else {
+		//TODO 在数据库中将数量数据改掉
 		var index = 0
 		for ; index < len(o._offerOrderSeq); index++ {
 			if (o._offerOrderSeq[index].OrderId() == order.OrderId()) {
@@ -161,7 +162,7 @@ func (o *OrderBookImpl) BestOfferPrice() int {
 	if (len(o._offerOrderSeq) > 0) {
 		return o._offerOrderSeq[0].Price()
 	} else {
-		return 0
+		return 1000000
 	}
 }
 
