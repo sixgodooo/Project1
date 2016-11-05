@@ -16,7 +16,6 @@ type ExecutionSystem interface {
 }
 
 type OrderDrivenSystem struct {
-	//TODO
 	_orderBookManager OrderBookManager
 	_log Log
 }

@@ -11,6 +11,8 @@ type Exchange struct {
 	_tradingSession TradingSession
 }
 
+//Exchange可以将工作下放到Session来做，比如跟客户端通信
+//这里可以不返回结果，而是根据Session的返回结果跟客户端通信
 func (exchange *Exchange) AddOrder(order Order) (bool, error) {
 	//Exchange负责对用户的校验，以及把order分配给对应的Session，现在只有一个Session，所以只做校验
 	if exchange._userManager.Check(order.User()) == true {
@@ -20,6 +22,7 @@ func (exchange *Exchange) AddOrder(order Order) (bool, error) {
 	}
 }
 
+//这里可以不返回结果，而是根据Session的返回结果跟客户端通信
 func (exchange *Exchange) CancelOrder(order Order) (bool, error) {
 	if exchange._userManager.Check(order.User()) == true {
 		return exchange._tradingSession.CancelOrder(order)
@@ -28,6 +31,7 @@ func (exchange *Exchange) CancelOrder(order Order) (bool, error) {
 	}
 }
 
+//这里需要把Offer和bid分开呈现
 func (exchange *Exchange) QueryOrderBook(productId int) OrderBook {
 	return exchange._tradingSession.QueryOrderBook(productId)
 }

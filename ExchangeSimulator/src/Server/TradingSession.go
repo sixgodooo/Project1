@@ -28,7 +28,6 @@ type TradingSession interface {
 }
 
 type ContinousTradingSession struct {
-	//TODO
 	_executionSystemType int
 	_executionSystem ExecutionSystem
 	_started bool 
@@ -36,7 +35,6 @@ type ContinousTradingSession struct {
 }
 
 func (s *ContinousTradingSession) Init() {
-	//TODO
 	s._executionSystem = CreateExecutionSystem(s._executionSystemType)
 	s._started = false
 	s._log = CreateLog("Server.txt")
