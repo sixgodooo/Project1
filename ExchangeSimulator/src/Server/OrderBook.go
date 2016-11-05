@@ -7,8 +7,8 @@ import (
 type OrderBook interface {
 	AddOrder(order Order)
 	DelOrder(order Order)
-	ModOrderAmount(order Order, amount uint)
-	FindOrder(orderId string) Order
+	ModOrderAmount(order Order, amount int)
+	FindOrder(orderId string) (bool, Order)
 	
 	AllOrders() map[string]Order
 	BidOrders() []Order
@@ -19,6 +19,9 @@ type OrderBook interface {
 	
 	BestBidPrice() int
 	BestOfferPrice() int
+	
+	BestBidOrder() Order
+	BestOfferOrder() Order
 	
 	Init()
 }
@@ -98,7 +101,7 @@ func (o *OrderBookImpl) DelOrder(order Order) {
 	}
 }
 
-func (o *OrderBookImpl) ModOrderAmount(order Order, amount uint) {
+func (o *OrderBookImpl) ModOrderAmount(order Order, amount int) {
 	if (order.OrderType() == Bid) {
 		//TODO 在数据库中将数量数据改掉
 		var index = 0
@@ -120,13 +123,13 @@ func (o *OrderBookImpl) ModOrderAmount(order Order, amount uint) {
 	}
 }
 
-func (o *OrderBookImpl) FindOrder(orderId string) Order {
+func (o *OrderBookImpl) FindOrder(orderId string) (bool, Order) {
 	order, exist := o._orderMap[orderId]
 	if (exist) {
-		return order
+		return true, order
 	} else {
 		//TODO不存在应该是要 抛异常的
-		return order
+		return false, order
 	}
 }
 
@@ -163,6 +166,24 @@ func (o *OrderBookImpl) BestOfferPrice() int {
 		return o._offerOrderSeq[0].Price()
 	} else {
 		return 1000000
+	}
+}
+
+//这里有问题，没有任何Order的情况下，应该构造一个非法的或者报错
+func (o *OrderBookImpl) BestBidOrder() Order {
+	if (len(o._bidOrderSeq) > 0) {
+		return o._bidOrderSeq[0]
+	} else {
+		return o._bidOrderSeq[0]
+	}
+}
+
+//这里有问题，没有任何Order的情况下，应该构造一个非法的或者报错
+func (o *OrderBookImpl) BestOfferOrder() Order {
+	if (len(o._offerOrderSeq) > 0) {
+		return o._offerOrderSeq[0]
+	} else {
+		return o._offerOrderSeq[0]
 	}
 }
 

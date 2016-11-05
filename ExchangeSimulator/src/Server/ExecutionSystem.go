@@ -1,7 +1,7 @@
 package Server
 
 import (
-
+	"errors"
 )
 
 const (
@@ -36,7 +36,23 @@ func (s *OrderDrivenSystem) AddOrder(order Order) (bool, error){
 				return true, nil
 			} else {
 				//当前出价达到了最低Offer，这个order直接被处理掉，相应修改Offer的数据，甚至直接将offer的order删除，甚至可能一次向将几个order买光
+				//如果要买的数量没有买完，修改order之后加入队列
 				//TODO
+				for {
+					if (order.Amount() == 0 || order.Price() < orderBook.BestOfferOrder().Price()) {//如果数量买够了，或者买不起了，则不买了
+						break
+					}
+					if (order.Amount() >= orderBook.BestOfferOrder().Price()) {//当前的最低的Offer可以买光
+						order.SetAmount(order.Amount() - orderBook.BestOfferOrder().Amount())
+						orderBook.DelOrder(orderBook.BestOfferOrder())
+					} else {//当前的最低offer买不光，说明这个order已经全部满足，不需要进入队列，另外修改OfferOrder的数量
+						orderBook.BestOfferOrder().SetAmount(orderBook.BestOfferOrder().Amount() - order.Amount())
+						order.SetAmount(0)
+					}
+				}
+				if (order.Amount() > 0) {//如果还没有买光，就加入队列继续买
+					orderBook.AddOrder(order)
+				}
 			}
 		}
 	} else {//卖的情况
@@ -49,17 +65,38 @@ func (s *OrderDrivenSystem) AddOrder(order Order) (bool, error){
 				orderBook.AddOrder(order)
 			} else {
 				//当前出价低于了最高的bid，可能买了一个order的一部分，也可能买了一整个，也可能买了好几个
-				//TODO
+				for {
+					if (order.Amount() == 0 || order.Price() > orderBook.BestBidOrder().Price()) {//如果卖光了，或者卖不动了，就不卖了，
+						break
+					}
+					if (order.Amount() >= orderBook.BestBidOrder().Amount()) {//能消化掉一个完整的bid order，再去消化下一个
+						order.SetAmount(order.Amount() - orderBook.BestBidOrder().Amount())
+						orderBook.DelOrder(orderBook.BestBidOrder())
+					} else {//消化不掉一个完整的bid order，就说明已经卖光了，另外修改BId order的量
+						orderBook.BestBidOrder().SetAmount(orderBook.BestBidOrder().Amount()- order.Amount())
+						order.SetAmount(0)
+					}
+				}
+				if (order.Amount() > 0) {//如果还没有卖光，就加入队列继续卖
+					orderBook.AddOrder(order)
+				}
 			}
 		} 
 	}
+	//TODO 怎么返回结果
 	return true, nil
 }
 
-func (s *OrderDrivenSystem) CancelOrder(order Order) (bool, error) {//如果这个Order在orderbook
+func (s *OrderDrivenSystem) CancelOrder(order Order) (bool, error) {//如果这个Order在orderbook中，就删掉，否则就不能删
+	orderBook := s._orderBookManager.FindOrderBook(order.ProductId())
+	exist, order := orderBook.FindOrder(order.OrderId())
+	if (exist) {
+		orderBook.DelOrder(order)
+		return true, nil
+	} else {
+		return false, errors.New("Already processed")
+	}
 
-	//TODO
-	return true, nil
 }
 
 func (s *OrderDrivenSystem) QueryOrderBook(productId int) OrderBook {

@@ -12,8 +12,8 @@ const (
 type Order interface {
 	Price() int	
 	OrderType() int	
-	Amount() uint
-	SetAmount(uint) 
+	Amount() int
+	SetAmount(int) 
 	ProductId() int
 	OrderId() string
 	SetOrderId(string)
@@ -24,7 +24,7 @@ type Order interface {
 type OrderImpl struct {
 	_price int
 	_orderType int
-	_amount uint
+	_amount int
 	_productId int
 	_orderId string
 	_user User
@@ -39,11 +39,11 @@ func (s *OrderImpl) OrderType() int {
 	return s._orderType
 }
 
-func (s *OrderImpl) Amount() uint {
+func (s *OrderImpl) Amount() int {
 	return s._amount
 }
 
-func (s *OrderImpl) SetAmount(amount uint) {
+func (s *OrderImpl) SetAmount(amount int) {
 	s._amount = amount
 }
 
@@ -66,7 +66,7 @@ func (s *OrderImpl) User() User{
 func (s *OrderImpl) Time() time.Time {
 	return s._time
 }
-func CreateOrder(price int, orderType int, amount uint, productId int, user User) Order {
+func CreateOrder(price int, orderType int, amount int, productId int, user User) Order {
 	order := new(OrderImpl)
 	order._price = price
 	order._orderType = orderType
