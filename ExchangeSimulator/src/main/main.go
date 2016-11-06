@@ -12,11 +12,8 @@ func printOrder(order Server.Order) {
 		fmt.Println("Amount:")
 		fmt.Println(order.Amount())
 }
-func main() {
-	//exchange := Server.CreateExchange()
-	//exchange.Init()
-	
-	/*
+
+func testUserAndUserManager() {
 	fmt.Println("测试User和UserManager User的创建，UserManager对于User的增加，查找和校验")
 	user := Server.CreateUser("zz", "1")
 	userMgr := Server.CreateUserManager()
@@ -38,8 +35,9 @@ func main() {
 	} else {
 		fmt.Println("user:" + user2.UserName() + " check Failed")
 	}
-	*/
-	
+}
+
+func testOrderAndOrderBook() {
 	fmt.Println("测试OrderBook，包括order的增删改查，还有遍历，还有排序是否正确")
 	testUser := Server.CreateUser("zz", "testCount")
 	orderBook := Server.CreateOrderBook(1)
@@ -81,6 +79,55 @@ func main() {
 	printOrder(orderBook.BestBidOrder())
 	fmt.Println("BestOfferOrder:")
 	printOrder(orderBook.BestOfferOrder())
+	
+	exist1, _ := orderBook.FindOrder(bidOrder1.OrderId())
+	if (exist1 == true) {
+		fmt.Println("Find exist Order OK")
+	}
+	exist2, _ := orderBook.FindOrder("xxx")
+	if (exist2 == false) {
+		fmt.Println("Find not exist Order OK")
+	}
+	
+	fmt.Println("测试删除Order")
+	orderBook.DelOrder(offerOrder1)
+	newOfferOrders := orderBook.OfferOrders()
+	for k := 0; k < len(newOfferOrders); k++ {
+		printOrder(newOfferOrders[k])
+	}
+	fmt.Println("new BestOfferPrice")
+	fmt.Println(orderBook.BestOfferPrice())
+}
+
+func testOrderBookManager() {
+	orderBook1 := Server.CreateOrderBook(1)
+	orderBook2 := Server.CreateOrderBook(2)
+	
+	orderBookMgr := Server.CreateOrderBookManager()
+	orderBookMgr.AddOrderBook(orderBook1)
+	orderBookMgr.AddOrderBook(orderBook2)
+	
+	exist,_:= orderBookMgr.FindOrderBook(1)
+	if (exist == true) {
+		fmt.Println("Find exist OK")
+	}
+	orderBookMgr.DelOrderBook(1)
+	exist,_ = orderBookMgr.FindOrderBook(1)
+	if (exist == false) {
+		fmt.Println("Find not exist OK")
+		fmt.Println("Delete OK")
+	}
+	
+}
+
+func main() {
+	//exchange := Server.CreateExchange()
+	//exchange.Init()
+	//testUserAndUserManager()
+	//testOrderAndOrderBook()
+	testOrderBookManager()
+	
+
 }
 
 //接下来要做的

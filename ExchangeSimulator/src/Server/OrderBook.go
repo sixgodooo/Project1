@@ -7,10 +7,10 @@ import (
 type OrderBook interface {
 	AddOrder(order Order)
 	DelOrder(order Order)
-	ModOrderAmount(order Order, amount int)
+	//ModOrderAmount(order Order, amount int)
 	FindOrder(orderId string) (bool, Order)
 	
-	AllOrders() map[string]Order
+	//AllOrders() map[string]Order
 	BidOrders() []Order
 	OfferOrders() []Order
 	
@@ -89,7 +89,7 @@ func (o *OrderBookImpl) DelOrder(order Order) {
 				break
 			}
 		}
-		o._bidOrderSeq = append(o._bidOrderSeq[:index], o._bidOrderSeq[index:]...)
+		o._bidOrderSeq = append(o._bidOrderSeq[:index], o._bidOrderSeq[index + 1:]...)
 	} else {
 		var index = 0
 		for ; index < len(o._offerOrderSeq); index++ {
@@ -97,7 +97,7 @@ func (o *OrderBookImpl) DelOrder(order Order) {
 				break
 			}
 		}
-		o._offerOrderSeq = append(o._offerOrderSeq[:index], o._offerOrderSeq[index:]...)
+		o._offerOrderSeq = append(o._offerOrderSeq[:index], o._offerOrderSeq[index + 1:]...)
 	}
 }
 

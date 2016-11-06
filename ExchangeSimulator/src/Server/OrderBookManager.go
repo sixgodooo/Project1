@@ -7,8 +7,8 @@ import (
 type OrderBookManager interface {
 	AddOrderBook(orderBook OrderBook)
 	DelOrderBook(productId int)
-	FindOrderBook(productId int) OrderBook
-	Init()
+	FindOrderBook(productId int) (bool,OrderBook)
+	//Init()
 }
 
 type OrderBookManagerImpl struct {
@@ -26,9 +26,10 @@ func (o *OrderBookManagerImpl) DelOrderBook(productId int) {
 	delete(o._orderBookMap, productId)
 }
 
-func (o *OrderBookManagerImpl) FindOrderBook(productId int) OrderBook{
+func (o *OrderBookManagerImpl) FindOrderBook(productId int) (bool, OrderBook){
 	//若果没有，要做异常处理
-	return o._orderBookMap[productId]
+	orderBook, exist := o._orderBookMap[productId]
+	return exist, orderBook
 }
 
 func (o *OrderBookManagerImpl) Init() {

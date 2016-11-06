@@ -23,7 +23,8 @@ type OrderDrivenSystem struct {
 
 func (s *OrderDrivenSystem) AddOrder(order Order) (bool, error){
 	productId := order.ProductId()
-	orderBook := s._orderBookManager.FindOrderBook(productId)
+	_, orderBook := s._orderBookManager.FindOrderBook(productId)
+	//目前假定一定能够找到OrderBOok
 	if (order.OrderType() == Bid) {//如果是要买
 		bestBidPrice := orderBook.BestBidPrice()
 		bestOfferPrice := orderBook.BestOfferPrice()
@@ -88,7 +89,8 @@ func (s *OrderDrivenSystem) AddOrder(order Order) (bool, error){
 }
 
 func (s *OrderDrivenSystem) CancelOrder(order Order) (bool, error) {//如果这个Order在orderbook中，就删掉，否则就不能删
-	orderBook := s._orderBookManager.FindOrderBook(order.ProductId())
+	//假设OrderBook存在
+	_,orderBook := s._orderBookManager.FindOrderBook(order.ProductId())
 	exist, order := orderBook.FindOrder(order.OrderId())
 	if (exist) {
 		orderBook.DelOrder(order)
@@ -100,7 +102,9 @@ func (s *OrderDrivenSystem) CancelOrder(order Order) (bool, error) {//如果这�
 }
 
 func (s *OrderDrivenSystem) QueryOrderBook(productId int) OrderBook {
-	return s._orderBookManager.FindOrderBook(productId)
+	//TODO假设OrderBook存在
+	_, orderBook := s._orderBookManager.FindOrderBook(productId)
+	return orderBook
 }
 
 func (s *OrderDrivenSystem) Init() {
@@ -124,7 +128,9 @@ func (s *BrokeredSystem) CancelOrder(order Order) (bool, error) {
 }
 
 func (s *BrokeredSystem) QueryOrderBook(productId int) OrderBook {
-	return s._orderBookManager.FindOrderBook(productId)
+	//假设一定能找到
+	_, orderBook := s._orderBookManager.FindOrderBook(productId)
+	return orderBook
 }
 
 func (s *BrokeredSystem) Init() {
