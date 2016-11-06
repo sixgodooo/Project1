@@ -36,6 +36,9 @@ func (o *OrderBookManagerImpl) Init() {
 	o._orderBookMap = make(map[int]OrderBook)
 	//TODO 从数据库加载各个orderbook
 	//为了测试方便，需要先手工创建几个orderbook
+	//测试代码，后续需要删除
+	orderBook := CreateOrderBook(1)
+	o._orderBookMap[1] = orderBook
 }
 
 func CreateOrderBookManager() OrderBookManager {

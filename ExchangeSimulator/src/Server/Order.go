@@ -7,6 +7,7 @@ import (
 const (
 	Bid = iota
 	Offer
+	Illegal
 )
 
 type Order interface {

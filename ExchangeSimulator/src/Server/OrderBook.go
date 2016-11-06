@@ -29,7 +29,7 @@ type OrderBook interface {
 type OrderBookImpl struct {
 	//TODO
 	_productId int
-	_orderMap map[string]Order
+	//_orderMap map[string]Order
 	_bidOrderSeq []Order
 	_offerOrderSeq []Order
 }
@@ -64,7 +64,7 @@ func compareOfferOrder(order1, order2 Order) bool {
 
 func (o *OrderBookImpl) AddOrder(order Order) {
 	//TODO 将order数据存入数据库中的orderBook 数据库操作失败是要抛异常的
-	o._orderMap[order.OrderId()] = order
+	//o._orderMap[order.OrderId()] = order
 	if (order.OrderType() == Bid) {
 		o._bidOrderSeq = append(o._bidOrderSeq, order)
 		sort.Sort(OrderSorter{o._bidOrderSeq, compareBidOrder})
@@ -76,11 +76,13 @@ func (o *OrderBookImpl) AddOrder(order Order) {
 
 func (o *OrderBookImpl) DelOrder(order Order) {
 	//TODO 将order数据从数据库中的orderBook删除 数据库操作失败是要抛异常的
+	/*
 	_, exist := o._orderMap[order.OrderId()]
 	if (exist == false) {
 		return 
 	}
-	delete(o._orderMap, order.OrderId())
+	*/
+	//delete(o._orderMap, order.OrderId())
 	//从序列中将Order删除
 	if (order.OrderType() == Bid) {
 		var index = 0
@@ -89,7 +91,10 @@ func (o *OrderBookImpl) DelOrder(order Order) {
 				break
 			}
 		}
-		o._bidOrderSeq = append(o._bidOrderSeq[:index], o._bidOrderSeq[index + 1:]...)
+		//o._bidOrderSeq = append(o._bidOrderSeq[:index], o._bidOrderSeq[index + 1:]...)
+		copy(o._bidOrderSeq[index:], o._bidOrderSeq[index+1:])
+		o._bidOrderSeq = o._bidOrderSeq[:len(o._bidOrderSeq)-1]
+
 	} else {
 		var index = 0
 		for ; index < len(o._offerOrderSeq); index++ {
@@ -97,7 +102,9 @@ func (o *OrderBookImpl) DelOrder(order Order) {
 				break
 			}
 		}
-		o._offerOrderSeq = append(o._offerOrderSeq[:index], o._offerOrderSeq[index + 1:]...)
+		//o._offerOrderSeq = append(o._offerOrderSeq[:index], o._offerOrderSeq[index + 1:]...)
+		copy(o._offerOrderSeq[index:], o._offerOrderSeq[index+1:])
+		o._offerOrderSeq = o._offerOrderSeq[:len(o._offerOrderSeq)-1]
 	}
 }
 
@@ -123,19 +130,30 @@ func (o *OrderBookImpl) ModOrderAmount(order Order, amount int) {
 	}
 }
 
+//TODO 对于不存在的情况需要重构
 func (o *OrderBookImpl) FindOrder(orderId string) (bool, Order) {
-	order, exist := o._orderMap[orderId]
-	if (exist) {
-		return true, order
-	} else {
-		//TODO不存在应该是要 抛异常的
-		return false, order
+	for i := 0; i < len(o._bidOrderSeq); i++ {
+		if o._bidOrderSeq[i].OrderId() == orderId {
+			return true, o._bidOrderSeq[i]
+		}
 	}
+	
+	for j := 0; j < len(o._offerOrderSeq); j++ {
+		if o._offerOrderSeq[j].OrderId() == orderId {
+			return true, o._offerOrderSeq[j]
+		}
+	}
+	
+	fakeUser := CreateUser("fake", "fake")
+	fakeOrder := CreateOrder(1, Illegal, 1, 111111111, fakeUser)
+	return false, fakeOrder
 }
 
+/*
 func (o *OrderBookImpl) AllOrders() map[string]Order {
 	return o._orderMap
 }
+*/
 
 func (o *OrderBookImpl) BidOrders() []Order {
 	return o._bidOrderSeq
@@ -188,7 +206,7 @@ func (o *OrderBookImpl) BestOfferOrder() Order {
 }
 
 func (o *OrderBookImpl) Init() {
-	o._orderMap = make(map[string]Order)
+	//o._orderMap = make(map[string]Order)
 	o._bidOrderSeq = make([]Order, 0)//TODO 正确性有待检验
 	o._offerOrderSeq = make([]Order, 0)//TODO 正确性有待检验
 	//TODO 从数据库加载数据

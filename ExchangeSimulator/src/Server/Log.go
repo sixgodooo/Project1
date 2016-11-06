@@ -2,7 +2,7 @@ package Server
 
 import (
 	//"bufio"
-	//"fmt"
+	"fmt"
 	//"io/ioutil"
 	"io"
 	"os"
@@ -13,6 +13,7 @@ import (
 //要使用Log时，先通过CreateLog(日志文件名)方法生成一个Log对象，然后调用Log（日志内容）记录日志，Log方法会自动记录记日志时间
 type Log interface {
 	Log(string)
+	LogInt(string, int)
 }
 
 type LogImpl struct {
@@ -47,8 +48,14 @@ func (l *LogImpl) check(e error) {
 
 func (l *LogImpl) Log(log string) {
 	currentTime := time.Now().String()
-	sentence := currentTime + ">>" + log
+	sentence := currentTime + ">>" + log + "\n"
 	io.WriteString(l._file, sentence)
+}
+
+func (l *LogImpl) LogInt(log string, i int) {
+		currentTime := time.Now().String()
+		sentence := currentTime + ">>" + log + " " + fmt.Sprintf("%d", i)+"\n"	
+		io.WriteString(l._file, sentence)
 }
 
 func CreateLog(fileName string) Log {

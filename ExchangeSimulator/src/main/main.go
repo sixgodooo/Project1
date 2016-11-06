@@ -120,12 +120,97 @@ func testOrderBookManager() {
 	
 }
 
+//为了测试这一部分，在OrderBookManager初始化时手动添加了OrderBook，正常需要从数据库加载，测试结束后需要将之删除
+func testExecutionSystem() {
+	//测试用例1 添加不满足交易条件的Bid和Offer，仅仅加入队列
+	testUser := Server.CreateUser("zz", "testCount")
+	bidOrder1 := Server.CreateOrder(10, Server.Bid, 100, 1, testUser)
+	bidOrder2 := Server.CreateOrder(11, Server.Bid, 10, 1, testUser)
+	offerOrder1 := Server.CreateOrder(15, Server.Offer, 15, 1, testUser)
+	offerOrder2 := Server.CreateOrder(16, Server.Offer, 100, 1, testUser)
+	execSystem := Server.CreateExecutionSystem(Server.OrderDriven)
+	execSystem.AddOrder(bidOrder1)
+	execSystem.AddOrder(bidOrder2)
+	execSystem.AddOrder(offerOrder1)
+	execSystem.AddOrder(offerOrder2)
+
+	/*
+	bidOrders := orderBook.BidOrders()
+	offerOrders := orderBook.OfferOrders()
+	for i := 0; i < len(bidOrders); i++ {
+		printOrder(bidOrders[i])
+	}
+	for j := 0; j < len(offerOrders); j++ {
+		printOrder(offerOrders[j])
+	}
+	*/
+	
+	//测试用例2 添加满足交易条件的Bid，全部满足
+	bidOrder3 := Server.CreateOrder(15, Server.Bid, 5, 1, testUser)
+	execSystem.AddOrder(bidOrder3)
+	/*
+	bidOrders := orderBook.BidOrders()
+	offerOrders := orderBook.OfferOrders()
+	for k := 0; k < len(bidOrders); k++ {
+		printOrder(bidOrders[k])
+	}
+	for l := 0; l < len(offerOrders); l++ {
+		printOrder(offerOrders[l])
+	}
+	*/
+	//测试用例3 添加满足交易条件的Offer，全部满足
+	offerOrder3 := Server.CreateOrder(11, Server.Offer, 5, 1, testUser)
+	execSystem.AddOrder(offerOrder3)
+	/*
+	bidOrders := orderBook.BidOrders()
+	offerOrders := orderBook.OfferOrders()
+	for i := 0; i < len(bidOrders); i++ {
+		printOrder(bidOrders[i])
+	}
+	for j := 0; j < len(offerOrders); j++ {
+		printOrder(offerOrders[j])
+	}
+	*/
+	//测试用例4 添加满足交易条件的Bid，只能满足一部分
+	bidOrder4 := Server.CreateOrder(15, Server.Bid, 100, 1, testUser)
+	execSystem.AddOrder(bidOrder4)
+	/*
+	bidOrders := orderBook.BidOrders()
+	offerOrders := orderBook.OfferOrders()
+	for i := 0; i < len(bidOrders); i++ {
+		printOrder(bidOrders[i])
+	}
+	for j := 0; j < len(offerOrders); j++ {
+		printOrder(offerOrders[j])
+	}
+	*/
+	//测试用例5 添加满足交易条件的Offer，只能满足一部分
+	orderBook := execSystem.QueryOrderBook(1)
+	offerOrder4 := Server.CreateOrder(10, Server.Offer, 100, 1, testUser)
+	bidOrder5 := Server.CreateOrder(5, Server.Bid, 20, 1, testUser)
+	execSystem.AddOrder(bidOrder5)
+	execSystem.AddOrder(offerOrder4)
+	orderBook = execSystem.QueryOrderBook(1)
+	bidOrders := orderBook.BidOrders()
+	offerOrders := orderBook.OfferOrders()
+	for i := 0; i < len(bidOrders); i++ {
+		printOrder(bidOrders[i])
+	}
+	fmt.Println("==========================")
+	for j := 0; j < len(offerOrders); j++ {
+		printOrder(offerOrders[j])
+	}
+	//测试用例6 取消没有交易的Bid和Offer，从队列中移除
+	//测试用例7 取消已经交易的Bid和Offer，报错
+}
+
 func main() {
 	//exchange := Server.CreateExchange()
 	//exchange.Init()
 	//testUserAndUserManager()
 	//testOrderAndOrderBook()
-	testOrderBookManager()
+	//testOrderBookManager()
+	//testExecutionSystem()
 	
 
 }
