@@ -25,7 +25,8 @@ func (m *UserManagerImpl) FindUser(id string) (User, bool) {
 }
 
 func (m *UserManagerImpl) Check(user User) bool{
-	return true//TODO
+	_, exist := m._userMap[user.UserId()]
+	return exist//TODO
 }
 
 func (m *UserManagerImpl) Init() {

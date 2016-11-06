@@ -34,6 +34,7 @@ func (o *OrderBookManagerImpl) FindOrderBook(productId int) OrderBook{
 func (o *OrderBookManagerImpl) Init() {
 	o._orderBookMap = make(map[int]OrderBook)
 	//TODO 从数据库加载各个orderbook
+	//为了测试方便，需要先手工创建几个orderbook
 }
 
 func CreateOrderBookManager() OrderBookManager {

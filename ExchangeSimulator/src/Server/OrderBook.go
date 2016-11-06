@@ -23,7 +23,7 @@ type OrderBook interface {
 	BestBidOrder() Order
 	BestOfferOrder() Order
 	
-	Init()
+	//Init()
 }
 
 type OrderBookImpl struct {
