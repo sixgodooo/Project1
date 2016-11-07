@@ -1,13 +1,14 @@
 package Server
 
 import (
-
+	//"time"
 )
 
 type EnvConfig interface {
 	LoadGlobalSetting()
 	TradingSessionType() int 
 	ExecutionSystemType() int
+	//TimeBound() (time.Time, time.Time, time.Time, time.Time)
 }
 
 type EnvConfigImpl struct {
@@ -32,6 +33,11 @@ func (config *EnvConfigImpl) ExecutionSystemType() int {
 	//TODO 暂时只用一个session，所以只返回一个类型
 	return config._executionSystemType
 }
+
+/*
+func (config *EnvConfigImpl) TimeBound() (time.Time, time.Time, time.Time, time.Time) {
+}
+*/
 
 func CreateEnvConfig() EnvConfig {
 	envConfig := new(EnvConfigImpl)
