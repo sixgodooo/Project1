@@ -5,7 +5,7 @@ import (
 
 type UserManager interface{
 	AddUser(user User) (bool, error)
-	FindUser(id string) (User, bool)
+	FindUser(name string) (User, bool)
 	Check(user User) bool
 }
 
@@ -15,18 +15,27 @@ type UserManagerImpl struct {
 }
 
 func (m *UserManagerImpl) AddUser(user User) (bool, error) {
-	m._userMap[user.UserId()] = user
+	m._userMap[user.UserName()] = user
 	return true, nil//TODO
 }
 
-func (m *UserManagerImpl) FindUser(id string) (User, bool) {
-	user, exist := m._userMap[id]
+func (m *UserManagerImpl) FindUser(name string) (User, bool) {
+	user, exist := m._userMap[name]
 	return user, exist
 }
 
 func (m *UserManagerImpl) Check(user User) bool{
-	_, exist := m._userMap[user.UserId()]
-	return exist//TODO
+	_, exist := m._userMap[user.UserName()]
+	if exist == false {
+		return false
+	} else {
+		userInMem, _ := m._userMap[user.UserName()]
+		if userInMem.UserPasswd() == user.UserPasswd() {
+			return true
+		} else {
+			return false
+		}
+	}
 }
 
 func (m *UserManagerImpl) Init() {

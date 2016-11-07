@@ -29,12 +29,12 @@ func printOrderBook(orderBook Server.OrderBook){
 
 func testUserAndUserManager() {
 	fmt.Println("测试User和UserManager User的创建，UserManager对于User的增加，查找和校验")
-	user := Server.CreateUser("zz", "1")
+	user := Server.CreateUser("zz", "1", "123")
 	userMgr := Server.CreateUserManager()
 	userMgr.AddUser(user)
-	user1, found := userMgr.FindUser("1")
+	user1, found := userMgr.FindUser("zz")
 	if found == true {
-		fmt.Println(user1.UserName() + " " + user1.UserId())
+		fmt.Println(user1.UserName() + " " + user1.UserName())
 	} else {
 		fmt.Println("not found")
 	}
@@ -43,7 +43,7 @@ func testUserAndUserManager() {
 	} else {
 		fmt.Println("user:" + user1.UserName() + " check Failed")
 	}
-	user2 := Server.CreateUser("yy", "2")
+	user2 := Server.CreateUser("yy", "2", "123")
 	if (userMgr.Check(user2) == true) {
 		fmt.Println("user:" + user2.UserName() + " check OK")
 	} else {
@@ -53,7 +53,7 @@ func testUserAndUserManager() {
 
 func testOrderAndOrderBook() {
 	fmt.Println("测试OrderBook，包括order的增删改查，还有遍历，还有排序是否正确")
-	testUser := Server.CreateUser("zz", "testCount")
+	testUser := Server.CreateUser("zz", "testCount", "123")
 	orderBook := Server.CreateOrderBook(1)
 	fmt.Println("Empty orderBook productId:")
 	fmt.Println(orderBook.ProductId())
@@ -137,7 +137,7 @@ func testOrderBookManager() {
 //为了测试这一部分，在OrderBookManager初始化时手动添加了OrderBook，正常需要从数据库加载，测试结束后需要将之删除
 func testExecutionSystem() {
 	//测试用例1 添加不满足交易条件的Bid和Offer，仅仅加入队列
-	testUser := Server.CreateUser("zz", "testCount")
+	testUser := Server.CreateUser("zz", "testCount", "123")
 	bidOrder1 := Server.CreateOrder(10, Server.Bid, 100, 1, testUser)
 	bidOrder2 := Server.CreateOrder(11, Server.Bid, 10, 1, testUser)
 	offerOrder1 := Server.CreateOrder(15, Server.Offer, 15, 1, testUser)
@@ -187,6 +187,13 @@ func testExecutionSystem() {
 	fmt.Println("After cancel a processed order")
 	if result == false {
 		fmt.Println(exception.Error())
+	}
+	
+	//测试用例8通过用户查找order
+	orderbook := execSystem.QueryOrderBook(1)
+	ordersTest := orderbook.FindOrdersByUser(testUser)
+	for c := 0; c < len(ordersTest); c++ {
+		printOrder(ordersTest[c])
 	}
 }
 

@@ -23,6 +23,8 @@ type OrderBook interface {
 	BestBidOrder() Order
 	BestOfferOrder() Order
 	
+	FindOrdersByUser(User) []Order
+	
 	//Init()
 }
 
@@ -144,7 +146,7 @@ func (o *OrderBookImpl) FindOrder(orderId string) (bool, Order) {
 		}
 	}
 	
-	fakeUser := CreateUser("fake", "fake")
+	fakeUser := CreateUser("fake", "fake", "fake")
 	fakeOrder := CreateOrder(1, Illegal, 1, 111111111, fakeUser)
 	return false, fakeOrder
 }
@@ -203,6 +205,23 @@ func (o *OrderBookImpl) BestOfferOrder() Order {
 	} else {
 		return o._offerOrderSeq[0]
 	}
+}
+
+func (o *OrderBookImpl) FindOrdersByUser(user User) []Order{
+	result := make([]Order, 0)
+	for i := 0; i < len(o._bidOrderSeq); i++ {
+		if o._bidOrderSeq[i].User().UserName() == user.UserName() {
+			result = append(result, o._bidOrderSeq[i])
+		}
+	}
+	
+	for j := 0; j < len(o._offerOrderSeq); j++ {
+		if o._offerOrderSeq[j].User().UserName() == user.UserName() {
+			result = append(result, o._offerOrderSeq[j])
+		}
+	}
+	
+	return result
 }
 
 func (o *OrderBookImpl) Init() {
