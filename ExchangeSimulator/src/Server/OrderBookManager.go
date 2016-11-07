@@ -37,8 +37,12 @@ func (o *OrderBookManagerImpl) Init() {
 	//TODO 从数据库加载各个orderbook
 	//为了测试方便，需要先手工创建几个orderbook
 	//测试代码，后续需要删除
-	orderBook := CreateOrderBook(1)
-	o._orderBookMap[1] = orderBook
+	orderBook1 := CreateOrderBook(1)
+	o._orderBookMap[1] = orderBook1
+	orderBook2 := CreateOrderBook(2)
+	o._orderBookMap[2] = orderBook2
+	orderBook3 := CreateOrderBook(3)
+	o._orderBookMap[3] = orderBook3
 }
 
 func CreateOrderBookManager() OrderBookManager {
