@@ -13,6 +13,20 @@ func printOrder(order Server.Order) {
 		fmt.Println(order.Amount())
 }
 
+func printOrderBook(orderBook Server.OrderBook){
+	bidOrders := orderBook.BidOrders()
+	offerOrders := orderBook.OfferOrders()
+	fmt.Println(" ===============================Bid Orders=======================================")
+	for i := 0; i < len(bidOrders); i++ {
+		printOrder(bidOrders[i])
+	}
+	fmt.Println("===============================Offer Orders=======================================")
+	for j := 0; j < len(offerOrders); j++ {
+		printOrder(offerOrders[j])
+	}
+
+}
+
 func testUserAndUserManager() {
 	fmt.Println("测试User和UserManager User的创建，UserManager对于User的增加，查找和校验")
 	user := Server.CreateUser("zz", "1")
@@ -133,75 +147,47 @@ func testExecutionSystem() {
 	execSystem.AddOrder(bidOrder2)
 	execSystem.AddOrder(offerOrder1)
 	execSystem.AddOrder(offerOrder2)
-
-	/*
-	bidOrders := orderBook.BidOrders()
-	offerOrders := orderBook.OfferOrders()
-	for i := 0; i < len(bidOrders); i++ {
-		printOrder(bidOrders[i])
-	}
-	for j := 0; j < len(offerOrders); j++ {
-		printOrder(offerOrders[j])
-	}
-	*/
+	fmt.Println("After initialization")
+	printOrderBook(execSystem.QueryOrderBook(1))
 	
 	//测试用例2 添加满足交易条件的Bid，全部满足
 	bidOrder3 := Server.CreateOrder(15, Server.Bid, 5, 1, testUser)
 	execSystem.AddOrder(bidOrder3)
-	/*
-	bidOrders := orderBook.BidOrders()
-	offerOrders := orderBook.OfferOrders()
-	for k := 0; k < len(bidOrders); k++ {
-		printOrder(bidOrders[k])
-	}
-	for l := 0; l < len(offerOrders); l++ {
-		printOrder(offerOrders[l])
-	}
-	*/
+	fmt.Println("After add a bid order at price 15 with amount 5")
+	printOrderBook(execSystem.QueryOrderBook(1))
+
 	//测试用例3 添加满足交易条件的Offer，全部满足
 	offerOrder3 := Server.CreateOrder(11, Server.Offer, 5, 1, testUser)
 	execSystem.AddOrder(offerOrder3)
-	/*
-	bidOrders := orderBook.BidOrders()
-	offerOrders := orderBook.OfferOrders()
-	for i := 0; i < len(bidOrders); i++ {
-		printOrder(bidOrders[i])
-	}
-	for j := 0; j < len(offerOrders); j++ {
-		printOrder(offerOrders[j])
-	}
-	*/
+	fmt.Println("After add a offer order at price 11 with amount 5")
+	printOrderBook(execSystem.QueryOrderBook(1))
+
 	//测试用例4 添加满足交易条件的Bid，只能满足一部分
 	bidOrder4 := Server.CreateOrder(15, Server.Bid, 100, 1, testUser)
 	execSystem.AddOrder(bidOrder4)
-	/*
-	bidOrders := orderBook.BidOrders()
-	offerOrders := orderBook.OfferOrders()
-	for i := 0; i < len(bidOrders); i++ {
-		printOrder(bidOrders[i])
-	}
-	for j := 0; j < len(offerOrders); j++ {
-		printOrder(offerOrders[j])
-	}
-	*/
+	fmt.Println("After add a bid order at price 15 with amount 100")
+	printOrderBook(execSystem.QueryOrderBook(1))
+
 	//测试用例5 添加满足交易条件的Offer，只能满足一部分
-	orderBook := execSystem.QueryOrderBook(1)
 	offerOrder4 := Server.CreateOrder(10, Server.Offer, 100, 1, testUser)
 	bidOrder5 := Server.CreateOrder(5, Server.Bid, 20, 1, testUser)
 	execSystem.AddOrder(bidOrder5)
 	execSystem.AddOrder(offerOrder4)
-	orderBook = execSystem.QueryOrderBook(1)
-	bidOrders := orderBook.BidOrders()
-	offerOrders := orderBook.OfferOrders()
-	for i := 0; i < len(bidOrders); i++ {
-		printOrder(bidOrders[i])
-	}
-	fmt.Println("==========================")
-	for j := 0; j < len(offerOrders); j++ {
-		printOrder(offerOrders[j])
-	}
+	fmt.Println("After add a bid order at price 5 with amount 20")
+	fmt.Println("After add a offer order at price 10 with amount 100")
+	printOrderBook(execSystem.QueryOrderBook(1))
+
 	//测试用例6 取消没有交易的Bid和Offer，从队列中移除
+	execSystem.CancelOrder(bidOrder5)
+	fmt.Println("After cancel the bid order at price 5 with amount 20")
+	printOrderBook(execSystem.QueryOrderBook(1))
+	
 	//测试用例7 取消已经交易的Bid和Offer，报错
+	result, exception := execSystem.CancelOrder(bidOrder5)
+	fmt.Println("After cancel a processed order")
+	if result == false {
+		fmt.Println(exception.Error())
+	}
 }
 
 func main() {
@@ -210,7 +196,7 @@ func main() {
 	//testUserAndUserManager()
 	//testOrderAndOrderBook()
 	//testOrderBookManager()
-	//testExecutionSystem()
+	testExecutionSystem()
 	
 
 }
