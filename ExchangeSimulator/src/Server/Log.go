@@ -11,6 +11,7 @@ import (
 
 //LOG的使用方法举例
 //要使用Log时，先通过CreateLog(日志文件名)方法生成一个Log对象，然后调用Log（日志内容）记录日志，Log方法会自动记录记日志时间
+//改了个\r\n，每次调用Log时，后面加空格
 type Log interface {
 	Log(string)
 }
@@ -47,7 +48,7 @@ func (l *LogImpl) check(e error) {
 
 func (l *LogImpl) Log(log string) {
 	currentTime := time.Now().String()
-	sentence := currentTime + ">>" + log
+	sentence := currentTime + ">>" + log + "\r\n"	//改了个加回车
 	io.WriteString(l._file, sentence)
 }
 

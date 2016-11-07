@@ -3,6 +3,8 @@ package main
 import (
 	"Server"
 	"fmt"
+	"net"
+	"time"
 )
 
 func printOrder(order Server.Order) {
@@ -125,11 +127,37 @@ func main() {
 	//exchange.Init()
 	//testUserAndUserManager()
 	//testOrderAndOrderBook()
-	testOrderBookManager()
+	envMap := Server.GetYamlConfig()						//初始化配置map
+	currentDay := time.Now().Format("20060102")
+	fileName := "operation_"+currentDay+".log"
+	operationLog := Server.CreateLog(fileName)				//初始化operationLog
 	
-
+	netProtocol := Server.GetElement("NetProtocol", envMap)
+	host := Server.GetElement("ServerAddress", envMap)
+	port := Server.GetElement("ServerPort", envMap)
+	
+	netListen, err := net.Listen(netProtocol, host+port)
+	
+	//testOrderBookManager()
+	Server.CheckError(err)
+	defer netListen.Close()
+	
+	fmt.Println("Waiting for clients")
+	for {
+		conn, err := netListen.Accept()
+		//如果出错的话就跳过
+		if err != nil {
+			continue
+		}
+		
+		//timeouSec := 10
+		//conn.
+		operationLog.Log(conn.RemoteAddr().String()+" tcp connect success")
+		//fmt.Println(conn.RemoteAddr().String(), "tcp connect success")
+		go Server.HandleConnection(conn, operationLog)
+	}
+	
 }
-
 //接下来要做的
 //加日志
 //测试
